@@ -1,36 +1,31 @@
-import { useState, useEffect } from "react";
 import "./App.css";
+import useWordGame from "./hooks/useWordGame";
 
 function App() {
-  const [input, setInput] = useState("");
-  const [timeRemaining, setTmeRemaining] = useState(5);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (timeRemaining > 0) {
-        setTmeRemaining((prevTime) => prevTime - 1);
-      }
-    }, 1000);
-  }, [timeRemaining]);
-
-  function handleChange(event) {
-    setInput(event.target.value);
-  }
-
-  function countWords() {
-    const wordsArray = input.trim().split(" ");
-    const filteredArray = wordsArray.filter((word) => word !== "");
-
-    console.log(filteredArray.length);
-  }
+  const {
+    inputRef,
+    handleChange,
+    input,
+    gameRunning,
+    timeRemaining,
+    startGame,
+    wordCount,
+  } = useWordGame(10);
 
   return (
     <div className="App">
       <h1>How fast can you type?</h1>
-      <textarea value={input} onChange={handleChange} />
+      <textarea
+        value={input}
+        ref={inputRef}
+        onChange={handleChange}
+        disabled={!gameRunning}
+      />
       <h4>Time Remaining: {timeRemaining}</h4>
-      <button onClick={countWords}>Start</button>
-      <h1>Word Count: ???</h1>
+      <button onClick={startGame} disabled={gameRunning}>
+        Start
+      </button>
+      <h1>Word Count: {wordCount}</h1>
     </div>
   );
 }
